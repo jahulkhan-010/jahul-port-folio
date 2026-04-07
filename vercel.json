@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "chatbot-backend/app_dynamic.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "chatbot-backend/app_dynamic.py"
+    }
+  ],
+  "env": {
+    "MONGODB_ATLAS_URI": "mongodb+srv://jahulkhan_db_user:cOkS9qN2X7QWTaCE@jahul-chatbot.hqsd1xp.mongodb.net/?retryWrites=true&w=majority",
+    "MONGODB_ATLAS_DB": "jahul_chatbot_prod",
+    "ENVIRONMENT": "atlas"
+  }
+}

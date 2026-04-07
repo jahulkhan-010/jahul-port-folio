@@ -1,0 +1,127 @@
+.download-button-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 99;
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  &.hidden {
+    transform: translateY(100px);
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.download-button {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(113, 39, 186, 0.3);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  overflow: hidden;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px var(--accent-glow);
+
+    .download-icon {
+      animation: bounce 1s infinite;
+    }
+  }
+
+  &.animating {
+    .button-content {
+      animation: slide-up 0.6s forwards;
+    }
+
+    &::after {
+      content: "✓";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, 50px);
+      font-size: 1.5rem;
+      animation: slide-check 0.6s forwards;
+    }
+  }
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.download-icon {
+  width: 20px;
+  height: 20px;
+  transition: all 0.3s ease;
+}
+
+.button-text {
+  font-family: 'Poppins', sans-serif;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+}
+
+@keyframes slide-check {
+  0% {
+    transform: translate(-50%, 50px);
+  }
+  100% {
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (max-width: 768px) {
+  .download-button-container {
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
+
+  .download-button {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+  }
+
+  .button-text {
+    display: none;
+  }
+
+  .button-content {
+    justify-content: center;
+  }
+
+  .download-icon {
+    margin: 0;
+  }
+}

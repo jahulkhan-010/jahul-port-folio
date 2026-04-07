@@ -1,0 +1,5 @@
+firebase-functions>=0.4.0
+firebase-admin>=6.0.0
+google-cloud-firestore>=2.11.0
+pymongo>=4.6.0
+dnspython>=2.4.2

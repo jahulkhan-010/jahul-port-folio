@@ -5,8 +5,17 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "backend": "cd chatbot-backend && source venv/bin/activate && python app.py",
+    "backend:win": "cd chatbot-backend && venv\\Scripts\\activate && python app.py",
+    "dev": "concurrently \"npm run backend\" \"npm start\" --names \"PYTHON,ANGULAR\" --prefix-colors \"blue,magenta\"",
+    "dev:win": "concurrently \"npm run backend:win\" \"npm start\" --names \"PYTHON,ANGULAR\" --prefix-colors \"blue,magenta\"",
+    "deploy": "./deploy.sh",
+    "deploy:hosting": "npm run build:prod && firebase deploy --only hosting",
+    "deploy:functions": "firebase deploy --only functions",
+    "firebase:serve": "firebase serve"
   },
   "private": true,
   "dependencies": {
@@ -18,6 +27,7 @@
     "@angular/platform-browser": "^19.0.0",
     "@angular/platform-browser-dynamic": "^19.0.0",
     "@angular/router": "^19.0.0",
+    "jspdf": "^4.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -27,6 +37,7 @@
     "@angular/cli": "^19.0.5",
     "@angular/compiler-cli": "^19.0.0",
     "@types/jasmine": "~5.1.0",
+    "concurrently": "^8.2.2",
     "jasmine-core": "~5.4.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

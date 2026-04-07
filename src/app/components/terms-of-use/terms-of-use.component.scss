@@ -1,0 +1,62 @@
+.legal-page {
+  padding: 100px 0;
+  background-color: var(--primary-color);
+  color: var(--text-primary);
+}
+
+.page-title {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--accent-color);
+}
+
+.last-updated {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.legal-content {
+  max-width: 800px;
+  margin: 0 auto;
+  
+  h2 {
+    font-size: 1.5rem;
+    color: var(--accent-color);
+    margin: 2rem 0 1rem;
+  }
+  
+  p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+  
+  ul {
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+    
+    li {
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+    }
+  }
+  
+  strong {
+    color: var(--text-primary);
+  }
+}
+
+@media (max-width: 768px) {
+  .legal-page {
+    padding: 80px 0;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+  }
+  
+  .legal-content h2 {
+    font-size: 1.3rem;
+  }
+}
