@@ -1,11 +1,11 @@
 services:
   - type: web
     name: jahul-chatbot-api
-    env: python
+    runtime: python
     region: oregon
     plan: free
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "cd chatbot-backend && gunicorn app_dynamic:app --bind 0.0.0.0:$PORT"
+    buildCommand: pip install -r requirements.txt
+    startCommand: cd chatbot-backend && gunicorn app_dynamic:app --bind 0.0.0.0:$PORT
     envVars:
       - key: MONGODB_ATLAS_URI
         value: mongodb+srv://jahulkhan_db_user:cOkS9qN2X7QWTaCE@jahul-chatbot.hqsd1xp.mongodb.net/?retryWrites=true&w=majority
@@ -13,5 +13,3 @@ services:
         value: jahul_chatbot_prod
       - key: ENVIRONMENT
         value: atlas
-      - key: PYTHON_VERSION
-        value: 3.11.0
