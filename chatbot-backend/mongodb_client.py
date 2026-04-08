@@ -4,7 +4,6 @@ Handles both local and production databases
 """
 
 import os
-import ssl
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 from datetime import datetime
@@ -46,7 +45,7 @@ class MongoDBClient:
                 uri,
                 serverSelectionTimeoutMS=5000,
                 connectTimeoutMS=10000,
-                ssl_cert_reqs=ssl.CERT_NONE  # Disable certificate validation
+                tlsInsecure=True  # Allow insecure TLS connections (fix for Python 3.14)
             )
             
             # Test connection
