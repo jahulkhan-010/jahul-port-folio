@@ -32,7 +32,7 @@ class MongoDBClient:
             elif self.environment == 'atlas':
                 # Use MongoDB Atlas for development (cloud)
                 uri = os.getenv('MONGODB_ATLAS_URI')
-                db_name = 'jahul_chatbot_dev'
+                db_name = 'jahul_chatbot_prod'
                 print(f"🌐 Connecting to MongoDB Atlas (Development Cloud)...")
             else:
                 # Use local MongoDB for development
