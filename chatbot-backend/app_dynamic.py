@@ -63,15 +63,28 @@ def find_answer(question):
     
     try:
         question_lower = question.lower().strip()
-        
+        print(f"🔍 Searching for: '{question_lower}'")
+
         # Step 1: Try exact match first
         exact_match = mongodb_client.db.chat_bot_collection.find_one({
             'question_lower': question_lower
         })
-        
+
         if exact_match:
-            print(f"✅ Exact match found!")
+            print(f"✅ Exact match found: {exact_match.get('question')}")
             return exact_match.get('answer', DEFAULT_RESPONSES['unknown'])
+
+        # Step 1.5: Try case-insensitive regex search
+        print(f"🔍 Trying case-insensitive search...")
+        regex_match = mongodb_client.db.chat_bot_collection.find_one({
+            'question_lower': {'$regex': f'^{question_lower}$', '$options': 'i'}
+        })
+
+        if regex_match:
+            print(f"✅ Case-insensitive match found: {regex_match.get('question')}")
+            return regex_match.get('answer', DEFAULT_RESPONSES['unknown'])
+        else:
+            print(f"❌ No exact match found for: '{question_lower}'")
         
         # Step 2: Try similarity search (70% threshold)
         similar_answer = mongodb_client.find_similar_question(question, threshold=0.70)
