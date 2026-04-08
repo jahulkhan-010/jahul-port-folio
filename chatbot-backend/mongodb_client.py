@@ -4,6 +4,7 @@ Handles both local and production databases
 """
 
 import os
+import certifi
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 from datetime import datetime
@@ -39,13 +40,14 @@ class MongoDBClient:
                 db_name = os.getenv('MONGODB_LOCAL_DB', 'jahul_chatbot')
                 print(f"💻 Connecting to Local MongoDB (Development)...")
             
-            # Create MongoDB client with SSL/TLS settings
-            # Fix for Python 3.14 SSL handshake issues on Render
+            # Create MongoDB client with certifi SSL certificates
+            # This fixes SSL/TLS handshake issues with Python 3.14
             self.client = MongoClient(
                 uri,
                 serverSelectionTimeoutMS=5000,
                 connectTimeoutMS=10000,
-                tlsInsecure=True  # Allow insecure TLS connections (fix for Python 3.14)
+                tls=True,
+                tlsCAFile=certifi.where()  # Use certifi's CA bundle
             )
             
             # Test connection
