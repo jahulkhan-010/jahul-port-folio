@@ -4,6 +4,7 @@ Handles both local and production databases
 """
 
 import os
+import ssl
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 from datetime import datetime
@@ -40,12 +41,12 @@ class MongoDBClient:
                 print(f"💻 Connecting to Local MongoDB (Development)...")
             
             # Create MongoDB client with SSL/TLS settings
+            # Fix for Python 3.14 SSL handshake issues on Render
             self.client = MongoClient(
                 uri,
                 serverSelectionTimeoutMS=5000,
                 connectTimeoutMS=10000,
-                tls=True,
-                tlsAllowInvalidCertificates=True  # Fix for SSL handshake on Render/Python 3.14
+                ssl_cert_reqs=ssl.CERT_NONE  # Disable certificate validation
             )
             
             # Test connection
