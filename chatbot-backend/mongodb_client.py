@@ -77,11 +77,11 @@ class MongoDBClient:
         """Create database indexes for better performance"""
         try:
             # Index on question_lower for faster searching
-            self.db.conversations.create_index('question_lower')
+            self.db.chat_bot_collection.create_index('question_lower')
             # Index on timestamp for sorting
-            self.db.conversations.create_index('timestamp')
+            self.db.chat_bot_collection.create_index('timestamp')
             # Index on source
-            self.db.conversations.create_index('source')
+            self.db.chat_bot_collection.create_index('source')
             print("✅ Database indexes created")
         except Exception as e:
             print(f"⚠️  Index creation warning: {e}")
@@ -97,11 +97,11 @@ class MongoDBClient:
                 'question_lower': question.lower().strip(),
                 'environment': self.environment
             }
-            
-            result = self.db.conversations.insert_one(conversation)
+
+            result = self.db.chat_bot_collection.insert_one(conversation)
             print(f"✅ Saved conversation: {result.inserted_id}")
             return True
-            
+
         except Exception as e:
             print(f"❌ Error saving conversation: {e}")
             return False
@@ -110,7 +110,7 @@ class MongoDBClient:
         """Get all conversations"""
         try:
             conversations = list(
-                self.db.conversations
+                self.db.chat_bot_collection
                 .find()
                 .sort('timestamp', -1)
                 .limit(limit)
@@ -126,7 +126,7 @@ class MongoDBClient:
             question_lower = question.lower().strip()
 
             # Get all conversations
-            conversations = list(self.db.conversations.find().limit(1000))
+            conversations = list(self.db.chat_bot_collection.find().limit(1000))
 
             if not conversations:
                 return None
@@ -174,7 +174,7 @@ class MongoDBClient:
         try:
             results = []
             for keyword in keywords:
-                docs = self.db.conversations.find({
+                docs = self.db.chat_bot_collection.find({
                     '$or': [
                         {'question_lower': {'$regex': keyword, '$options': 'i'}},
                         {'answer': {'$regex': keyword, '$options': 'i'}}
@@ -191,7 +191,7 @@ class MongoDBClient:
         """Update existing answer"""
         try:
             question_lower = question.lower().strip()
-            result = self.db.conversations.update_many(
+            result = self.db.chat_bot_collection.update_many(
                 {'question_lower': question_lower},
                 {'$set': {'answer': new_answer, 'updated_at': datetime.utcnow()}}
             )
@@ -204,11 +204,11 @@ class MongoDBClient:
     def get_stats(self):
         """Get database statistics"""
         try:
-            total = self.db.conversations.count_documents({})
-            by_source = list(self.db.conversations.aggregate([
+            total = self.db.chat_bot_collection.count_documents({})
+            by_source = list(self.db.chat_bot_collection.aggregate([
                 {'$group': {'_id': '$source', 'count': {'$sum': 1}}}
             ]))
-            
+
             return {
                 'total_conversations': total,
                 'by_source': {item['_id']: item['count'] for item in by_source},

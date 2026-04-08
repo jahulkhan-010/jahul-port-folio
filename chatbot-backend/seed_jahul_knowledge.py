@@ -132,7 +132,7 @@ def seed_database():
     print("")
     
     # Check if data already exists
-    existing_count = mongodb_client.db.conversations.count_documents({})
+    existing_count = mongodb_client.db.chat_bot_collection.count_documents({})
     
     if existing_count > 0:
         print(f"⚠️  Database already has {existing_count} entries")
@@ -149,7 +149,7 @@ def seed_database():
     
     for item in JAHUL_KNOWLEDGE:
         # Check if already exists
-        existing = mongodb_client.db.conversations.find_one({
+        existing = mongodb_client.db.chat_bot_collection.find_one({
             'question_lower': item['question'].lower()
         })
         
@@ -177,7 +177,7 @@ def seed_database():
     print("="*80)
     print(f"Added: {added}")
     print(f"Skipped: {skipped}")
-    print(f"Total in DB: {mongodb_client.db.conversations.count_documents({})}")
+    print(f"Total in DB: {mongodb_client.db.chat_bot_collection.count_documents({})}")
     print("")
     print("🎉 Knowledge base is ready!")
     print("")

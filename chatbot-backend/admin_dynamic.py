@@ -13,7 +13,7 @@ from datetime import datetime
 def view_all_knowledge():
     """View all learned knowledge"""
     try:
-        conversations = list(mongodb_client.db.conversations.find().sort('timestamp', -1).limit(50))
+        conversations = list(mongodb_client.db.chat_bot_collection.find().sort('timestamp', -1).limit(50))
         
         if not conversations:
             print("\n📭 Knowledge base is empty!")
@@ -133,13 +133,13 @@ def export_knowledge():
     """Export all knowledge to JSON"""
     print("\n📤 Export Knowledge Base")
     print("="*80")
-    
+
     filename = f"knowledge_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-    
+
     try:
         import json
-        
-        conversations = list(mongodb_client.db.conversations.find())
+
+        conversations = list(mongodb_client.db.chat_bot_collection.find())
         
         # Convert to JSON-serializable format
         export_data = []
@@ -165,10 +165,10 @@ def clear_knowledge():
     print("="*80)
     print("This will DELETE ALL learned knowledge from the database!")
     confirm = input("Type 'DELETE ALL' to confirm: ").strip()
-    
+
     if confirm == 'DELETE ALL':
         try:
-            result = mongodb_client.db.conversations.delete_many({})
+            result = mongodb_client.db.chat_bot_collection.delete_many({})
             print(f"\n✅ Deleted {result.deleted_count} entries")
         except Exception as e:
             print(f"❌ Error: {e}")
@@ -187,7 +187,7 @@ def show_stats():
     
     # Get source breakdown
     try:
-        sources = mongodb_client.db.conversations.aggregate([
+        sources = mongodb_client.db.chat_bot_collection.aggregate([
             {'$group': {'_id': '$source', 'count': {'$sum': 1}}}
         ])
         

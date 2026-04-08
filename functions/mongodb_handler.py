@@ -57,8 +57,8 @@ class MongoDBHandler:
     def _create_indexes(self):
         """Create database indexes"""
         try:
-            self.db.conversations.create_index('question_lower')
-            self.db.conversations.create_index('timestamp')
+            self.db.chat_bot_collection.create_index('question_lower')
+            self.db.chat_bot_collection.create_index('timestamp')
             print("✅ Database indexes created")
         except Exception as e:
             print(f"⚠️  Index creation warning: {e}")
@@ -67,7 +67,7 @@ class MongoDBHandler:
         """Save conversation to MongoDB"""
         if not self.connected:
             return False
-        
+
         try:
             conversation = {
                 'question': question,
@@ -77,11 +77,11 @@ class MongoDBHandler:
                 'question_lower': question.lower().strip(),
                 'environment': 'production'
             }
-            
-            result = self.db.conversations.insert_one(conversation)
+
+            result = self.db.chat_bot_collection.insert_one(conversation)
             print(f"✅ Saved conversation: {result.inserted_id}")
             return True
-            
+
         except Exception as e:
             print(f"❌ Error saving: {e}")
             return False
@@ -90,11 +90,11 @@ class MongoDBHandler:
         """Find similar question"""
         if not self.connected:
             return None
-        
+
         try:
             question_lower = question.lower().strip()
-            
-            conversations = self.db.conversations.find({
+
+            conversations = self.db.chat_bot_collection.find({
                 'question_lower': {'$regex': question_lower, '$options': 'i'}
             }).limit(10)
             
@@ -126,9 +126,9 @@ class MongoDBHandler:
         """Get statistics"""
         if not self.connected:
             return {'connected': False, 'error': 'Not connected'}
-        
+
         try:
-            total = self.db.conversations.count_documents({})
+            total = self.db.chat_bot_collection.count_documents({})
             return {
                 'total_conversations': total,
                 'connected': True,

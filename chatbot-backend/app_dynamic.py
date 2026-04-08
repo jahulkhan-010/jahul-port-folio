@@ -65,7 +65,7 @@ def find_answer(question):
         question_lower = question.lower().strip()
         
         # Step 1: Try exact match first
-        exact_match = mongodb_client.db.conversations.find_one({
+        exact_match = mongodb_client.db.chat_bot_collection.find_one({
             'question_lower': question_lower
         })
         
