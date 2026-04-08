@@ -25,7 +25,7 @@ export class ChatbotComponent {
 
   private apiUrl = environment.apiUrl; // Use environment-based URL
   private healthUrl = environment.production ?
-    'https://us-central1-jahul-portfolio.cloudfunctions.net/chatbot/health' :
+    'https://jahul-port-folio.onrender.com/api/health' :
     'http://localhost:5001/api/health';
   private usePythonBackend = false;
 
