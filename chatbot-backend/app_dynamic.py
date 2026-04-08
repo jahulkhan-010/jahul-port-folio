@@ -56,35 +56,57 @@ def extract_keywords(text):
     return keywords
 
 def find_answer(question):
-    """Find answer using dynamic MongoDB learning"""
-    
+    """Find answer using smart fuzzy matching"""
+
     if not USE_MONGODB:
         return DEFAULT_RESPONSES['unknown']
-    
+
     try:
         question_lower = question.lower().strip()
         print(f"🔍 Searching for: '{question_lower}'")
 
-        # Step 1: Try exact match first
-        exact_match = mongodb_client.db.chat_bot_collection.find_one({
-            'question_lower': question_lower
-        })
+        # Get all documents from MongoDB
+        all_docs = list(mongodb_client.db.chat_bot_collection.find({}))
+        total_docs = len(all_docs)
+        print(f"📊 Total documents in collection: {total_docs}")
 
-        if exact_match:
-            print(f"✅ Exact match found: {exact_match.get('question')}")
-            return exact_match.get('answer', DEFAULT_RESPONSES['unknown'])
+        if total_docs == 0:
+            print(f"⚠️ No documents found in database!")
+            return DEFAULT_RESPONSES['unknown']
 
-        # Step 1.5: Try case-insensitive regex search
-        print(f"🔍 Trying case-insensitive search...")
-        regex_match = mongodb_client.db.chat_bot_collection.find_one({
-            'question_lower': {'$regex': f'^{question_lower}$', '$options': 'i'}
-        })
+        # Step 1: Try EXACT match (any field)
+        for doc in all_docs:
+            q_lower = (doc.get('question_lower') or doc.get('Question_Lower') or doc.get('question', '')).lower()
+            if q_lower == question_lower:
+                print(f"✅ EXACT match: '{doc.get('question')}'")
+                return doc.get('answer', DEFAULT_RESPONSES['unknown'])
 
-        if regex_match:
-            print(f"✅ Case-insensitive match found: {regex_match.get('question')}")
-            return regex_match.get('answer', DEFAULT_RESPONSES['unknown'])
-        else:
-            print(f"❌ No exact match found for: '{question_lower}'")
+        # Step 2: Try PARTIAL match - if question contains key words
+        question_words = set(question_lower.split())
+        print(f"� Question words: {question_words}")
+
+        best_match = None
+        best_score = 0
+
+        for doc in all_docs:
+            q_text = (doc.get('question_lower') or doc.get('Question_Lower') or doc.get('question', '')).lower()
+            doc_words = set(q_text.split())
+
+            # Calculate word overlap
+            common_words = question_words.intersection(doc_words)
+            if len(common_words) > 0:
+                # Score based on percentage of matching words
+                score = len(common_words) / max(len(question_words), len(doc_words))
+                print(f"   � '{doc.get('question')}' -> {len(common_words)} common words, score: {score:.2f}")
+
+                if score > best_score:
+                    best_score = score
+                    best_match = doc
+
+        # If we found ANY word match, return it
+        if best_match and best_score >= 0.3:  # At least 30% word overlap
+            print(f"✅ PARTIAL match (score {best_score:.2f}): '{best_match.get('question')}'")
+            return best_match.get('answer', DEFAULT_RESPONSES['unknown'])
         
         # Step 2: Try similarity search (70% threshold)
         similar_answer = mongodb_client.find_similar_question(question, threshold=0.70)
