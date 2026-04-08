@@ -39,11 +39,13 @@ class MongoDBClient:
                 db_name = os.getenv('MONGODB_LOCAL_DB', 'jahul_chatbot')
                 print(f"💻 Connecting to Local MongoDB (Development)...")
             
-            # Create MongoDB client
+            # Create MongoDB client with SSL/TLS settings
             self.client = MongoClient(
                 uri,
                 serverSelectionTimeoutMS=5000,
-                connectTimeoutMS=10000
+                connectTimeoutMS=10000,
+                tls=True,
+                tlsAllowInvalidCertificates=True  # Fix for SSL handshake on Render/Python 3.14
             )
             
             # Test connection

@@ -30,7 +30,9 @@ class MongoDBHandler:
             self.client = MongoClient(
                 uri,
                 serverSelectionTimeoutMS=5000,
-                connectTimeoutMS=10000
+                connectTimeoutMS=10000,
+                tls=True,
+                tlsAllowInvalidCertificates=True  # Fix for SSL handshake issues
             )
             
             # Test connection
